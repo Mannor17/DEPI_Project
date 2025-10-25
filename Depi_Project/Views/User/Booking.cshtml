@@ -1,0 +1,205 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Book Your Session • FitConnect</title>
+	<link rel="stylesheet" href="../css/style.css" />
+	<style>
+		.booking-layout { display: grid; grid-template-columns: 1fr 400px; gap: 24px; margin-top: 24px; }
+		.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+		.calendar-header { text-align: center; font-weight: 600; color: var(--muted); padding: 8px; }
+		.calendar-day { padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; transition: .2s; }
+		.calendar-day:hover { background: #f2f6fa; }
+		.calendar-day.selected { background: var(--primary); color: white; }
+		.calendar-day.today { background: var(--accent); color: white; }
+		.time-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+		.time-slot { padding: 10px; text-align: center; border: 1px solid #e5edf5; border-radius: 8px; cursor: pointer; transition: .2s; }
+		.time-slot:hover { border-color: var(--primary); }
+		.time-slot.selected { background: var(--primary); color: white; border-color: var(--primary); }
+		.session-option { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #e5edf5; border-radius: 12px; margin-bottom: 12px; cursor: pointer; }
+		.session-option.selected { border-color: var(--primary); background: rgba(16,196,207,.05); }
+		.radio { width: 20px; height: 20px; border: 2px solid #e5edf5; border-radius: 50%; position: relative; }
+		.radio.selected::after { content: ''; position: absolute; inset: 3px; background: var(--primary); border-radius: 50%; }
+		.price-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="container navbar">
+			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+			<nav class="navlinks">
+				<a asp-controller="user" asp-action="index">Dashboard</a>
+				<a asp-controller="user" asp-action="Profile">Profile</a>
+				<a asp-controller="user" asp-action="booking">Bookings</a>
+				<a asp-controller="user" asp-action="home">Logout</a>
+			</nav>
+		</div>
+	</header>
+
+	<section class="section">
+		<div class="container">
+			<h1 class="section-title">Book Your Session</h1>
+			<p class="section-sub">Choose your preferred date, time, and session type</p>
+			
+			<div class="booking-layout">
+				<div>
+					<div class="card" style="margin-bottom: 24px;">
+						<div class="card-header">
+							<span>📋</span>
+							<h3>Session Type</h3>
+						</div>
+						<div class="card-body">
+							<div class="session-option selected">
+								<div style="display: flex; align-items: center; gap: 12px;">
+									<div class="radio selected"></div>
+									<div>
+										<div style="font-weight: 600;">Day Pass</div>
+										<div style="color: var(--muted); font-size: 14px;">Full facility access</div>
+									</div>
+								</div>
+								<div class="price-badge">$15</div>
+							</div>
+							<div class="session-option">
+								<div style="display: flex; align-items: center; gap: 12px;">
+									<div class="radio"></div>
+									<div>
+										<div style="font-weight: 600;">Personal Training</div>
+										<div style="color: var(--muted); font-size: 14px;">1-hour session with trainer</div>
+									</div>
+								</div>
+								<div class="price-badge">$60</div>
+							</div>
+							<div class="session-option">
+								<div style="display: flex; align-items: center; gap: 12px;">
+									<div class="radio"></div>
+									<div>
+										<div style="font-weight: 600;">Group Class</div>
+										<div style="color: var(--muted); font-size: 14px;">Join a scheduled class</div>
+									</div>
+								</div>
+								<div class="price-badge">$25</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card">
+						<div class="card-header">
+							<span>📅</span>
+							<h3>Select Date</h3>
+						</div>
+						<div class="card-body">
+							<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+								<button class="btn btn-ghost" style="padding: 8px;">←</button>
+								<h4 style="margin: 0;">October 2025</h4>
+								<button class="btn btn-ghost" style="padding: 8px;">→</button>
+							</div>
+							<div class="calendar">
+								<div class="calendar-header">Su</div>
+								<div class="calendar-header">Mo</div>
+								<div class="calendar-header">Tu</div>
+								<div class="calendar-header">We</div>
+								<div class="calendar-header">Th</div>
+								<div class="calendar-header">Fr</div>
+								<div class="calendar-header">Sa</div>
+								<div class="calendar-day">28</div>
+								<div class="calendar-day">29</div>
+								<div class="calendar-day">30</div>
+								<div class="calendar-day">1</div>
+								<div class="calendar-day">2</div>
+								<div class="calendar-day">3</div>
+								<div class="calendar-day">4</div>
+								<div class="calendar-day">5</div>
+								<div class="calendar-day">6</div>
+								<div class="calendar-day">7</div>
+								<div class="calendar-day">8</div>
+								<div class="calendar-day">9</div>
+								<div class="calendar-day">10</div>
+								<div class="calendar-day">11</div>
+								<div class="calendar-day">12</div>
+								<div class="calendar-day">13</div>
+								<div class="calendar-day">14</div>
+								<div class="calendar-day">15</div>
+								<div class="calendar-day">16</div>
+								<div class="calendar-day">17</div>
+								<div class="calendar-day">18</div>
+								<div class="calendar-day today">19</div>
+								<div class="calendar-day">20</div>
+								<div class="calendar-day">21</div>
+								<div class="calendar-day">22</div>
+								<div class="calendar-day selected">23</div>
+								<div class="calendar-day">24</div>
+								<div class="calendar-day">25</div>
+								<div class="calendar-day">26</div>
+								<div class="calendar-day">27</div>
+								<div class="calendar-day">28</div>
+								<div class="calendar-day">29</div>
+								<div class="calendar-day">30</div>
+								<div class="calendar-day">31</div>
+								<div class="calendar-day">1</div>
+								<div class="calendar-day">2</div>
+								<div class="calendar-day">3</div>
+								<div class="calendar-day">4</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<div class="card">
+						<div class="card-header">
+							<h3>Booking Summary</h3>
+						</div>
+						<div class="card-body">
+							<div style="margin-bottom: 16px;">
+								<div style="color: var(--muted); font-size: 14px;">Gym</div>
+								<div style="font-weight: 600;">PowerFit Gym</div>
+							</div>
+							<div style="margin-bottom: 16px;">
+								<div style="color: var(--muted); font-size: 14px;">Session Type</div>
+								<div style="font-weight: 600;">Day Pass</div>
+							</div>
+							<div style="margin-bottom: 16px;">
+								<div style="color: var(--muted); font-size: 14px;">Date</div>
+								<div style="font-weight: 600;">Thursday, October 23, 2025</div>
+							</div>
+							<div style="margin-bottom: 24px;">
+								<div style="color: var(--muted); font-size: 14px;">Time</div>
+								<div style="font-weight: 600;">11:00 AM</div>
+							</div>
+							<div style="text-align: right; margin-bottom: 24px;">
+								<div style="color: var(--muted); font-size: 14px;">Total</div>
+								<div style="font-size: 24px; font-weight: 800;">$15</div>
+							</div>
+							<a class="btn btn-primary" style="width: 100%; margin-bottom: 12px; display:inline-block; text-align:center;" href="payment.html">Confirm Booking</a>
+							<div style="color: var(--muted); font-size: 12px; text-align: center;">Free cancellation up to 24 hours before</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="../js/main.js"></script>
+	<script>
+		// Time slot selection
+		document.querySelectorAll('.time-slot').forEach(slot => {
+			slot.addEventListener('click', () => {
+				document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+				slot.classList.add('selected');
+			});
+		});
+
+		// Session type selection
+		document.querySelectorAll('.session-option').forEach(option => {
+			option.addEventListener('click', () => {
+				document.querySelectorAll('.session-option').forEach(o => o.classList.remove('selected'));
+				document.querySelectorAll('.radio').forEach(r => r.classList.remove('selected'));
+				option.classList.add('selected');
+				option.querySelector('.radio').classList.add('selected');
+			});
+		});
+	</script>
+</body>
+</html>
+

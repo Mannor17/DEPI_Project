@@ -1,8 +1,118 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>FitConnect • Gym Management & Discovery</title>
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="icon" href="../assets/icon.svg" />
+	<style>
+		.hero {
+			background-image: url('../assets/hero.jpg');
+		}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+		.portal-grid {
+			display: grid;
+			grid-template-columns: repeat(3,1fr);
+			gap: 22px
+		}
+
+		.portal-card {
+			padding: 28px;
+			text-align: center
+		}
+
+		.portal-icon {
+			width: 72px;
+			height: 72px;
+			border-radius: 20px;
+			display: grid;
+			place-items: center;
+			margin: 6px auto 16px;
+			color: #fff;
+			font-weight: 800
+		}
+
+		.portal-card.users .portal-icon {
+			background: var(--primary)
+		}
+
+		.portal-card.owners .portal-icon {
+			background: var(--accent)
+		}
+
+		.portal-card.admins .portal-icon {
+			background: #243242
+		}
+
+		.feature-card {
+			padding: 22px;
+			text-align: center
+		}
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="container navbar">
+			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+
+		</div>
+	</header>
+
+	<section class="hero">
+		<div class="container hero-inner">
+			<h1>Find Your Perfect Gym</h1>
+			<p>Discover, book, and manage gym sessions across the city. Your fitness journey starts here.</p>
+			<div class="actions">
+				<a class="btn btn-primary" asp-controller="account" asp-action="login">Find a Gym</a>
+				<a class="btn btn-ghost" asp-controller="account" asp-action="login">List Your Gym</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<h2 class="section-title">Choose Your Portal</h2>
+			<p class="section-sub">Access your dedicated dashboard based on your role</p>
+			<div class="portal-grid">
+				<div class="card portal-card users">
+					<div class="portal-icon">👤</div>
+					<h3>Users</h3>
+					<p>Discover gyms, book sessions, and track your fitness journey</p>
+					<a class="btn btn-primary" asp-controller="account" asp-action="login">User Login</a>
+				</div>
+				<div class="card portal-card owners">
+					<div class="portal-icon">💼</div>
+					<h3>Gym Owners</h3>
+					<p>Manage your gym, track bookings, and grow your business</p>
+					<a class="btn btn-accent" asp-controller="account" asp-action="login">Owner Login</a>
+				</div>
+				<div class="card portal-card admins">
+					<div class="portal-icon">🛡️</div>
+					<h3>Admins</h3>
+					<p>Monitor platform activity and manage all accounts</p>
+					<a class="btn btn-ghost" asp-controller="account" asp-action="login">Admin Login</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section" style="background:#fbfcfe">
+		<div class="container">
+			<h2 class="section-title" style="text-align:center">Why Choose FitConnect?</h2>
+			<p class="section-sub" style="text-align:center">Everything you need for seamless gym management and discovery</p>
+			<div class="grid grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px">
+				<div class="card feature-card"><h3>Easy Discovery</h3><p>Find gyms near you with advanced search</p></div>
+				<div class="card feature-card"><h3>Instant Booking</h3><p>Book sessions and trainers in seconds</p></div>
+				<div class="card feature-card"><h3>Analytics</h3><p>Track performance and growth metrics</p></div>
+				<div class="card feature-card"><h3>Secure Platform</h3><p>Safe and verified gym listings</p></div>
+			</div>
+		</div>
+	</section>
+
+	<footer class="footer">
+		<div class="container">© 2025 FitConnect</div>
+	</footer>
+	<script src="../js/main.js"></script>
+</body>
+</html>

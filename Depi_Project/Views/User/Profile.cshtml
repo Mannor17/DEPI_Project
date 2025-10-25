@@ -1,0 +1,156 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>My Profile • FitConnect</title>
+	<link rel="stylesheet" href="../css/style.css" />
+	<style>
+		.profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 24px; margin-top: 24px; }
+		.profile-sidebar { text-align: center; }
+		.profile-avatar { width: 80px; height: 80px; border-radius: 20px; background: var(--primary); display: grid; place-items: center; margin: 0 auto 16px; color: white; font-size: 32px; font-weight: 800; }
+		.status-badge { background: var(--primary); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin: 12px 0; }
+		.info-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; color: var(--muted); font-size: 14px; }
+		.form-group { margin-bottom: 20px; }
+		.form-group label { display: block; margin-bottom: 6px; font-weight: 600; }
+		.input-group { position: relative; }
+		.input-group .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+		.input-group .input { padding-left: 40px; }
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="container navbar">
+			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+			<nav class="navlinks">
+				<a asp-controller="user" asp-action="index">Dashboard</a>
+				<a asp-controller="user" asp-action="Profile">Profile</a>
+				<a asp-controller="user" asp-action="booking">Bookings</a>
+				<a asp-controller="user" asp-action="home">Logout</a>
+			</nav>
+		</div>
+	</header>
+
+	<section class="section">
+		<div class="container">
+			<div class="profile-layout">
+				<div class="card profile-sidebar">
+					<div class="profile-avatar">JD</div>
+					<h3>John Doe</h3>
+					<p style="color: var(--muted); margin: 4px 0;">john.doe@example.com</p>
+					<div class="status-badge">Active Member</div>
+					<div class="info-row">
+						<span>📅</span>
+						<span>Member since: Jan 2024</span>
+					</div>
+					<div class="info-row">
+						<span>📋</span>
+						<span>12 bookings total</span>
+					</div>
+				</div>
+
+				<div>
+					<div class="tabs" style="margin-bottom: 24px;">
+						<div class="tab active" data-target="personal">Personal Info</div>
+						<div class="tab" data-target="bookings">Bookings</div>
+						<div class="tab" data-target="settings">Settings</div>
+					</div>
+
+					<div data-tab-panel="personal">
+						<div class="card">
+							<div class="card-header">
+								<h3>Personal Information</h3>
+							</div>
+							<div class="card-body">
+								<div class="form-group">
+									<label>First Name</label>
+									<div class="input-group">
+										<span class="icon">👤</span>
+										<input class="input" value="John" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Last Name</label>
+									<div class="input-group">
+										<span class="icon">👤</span>
+										<input class="input" value="Doe" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Email</label>
+									<div class="input-group">
+										<span class="icon">✉️</span>
+										<input class="input" value="john.doe@example.com" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Phone Number</label>
+									<div class="input-group">
+										<span class="icon">📞</span>
+										<input class="input" value="+1 (555) 123-4567" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Location</label>
+									<div class="input-group">
+										<span class="icon">📍</span>
+										<input class="input" value="New York, NY" />
+									</div>
+								</div>
+								<button class="btn btn-primary">Save Changes</button>
+							</div>
+						</div>
+					</div>
+
+					<div data-tab-panel="bookings" style="display: none;">
+						<div class="card">
+							<div class="card-header">
+								<h3>My Bookings</h3>
+							</div>
+							<div class="card-body">
+								<div style="text-align: center; padding: 40px; color: var(--muted);">
+									<div style="font-size: 48px; margin-bottom: 16px;">📅</div>
+									<h4>No bookings yet</h4>
+									<p>Start your fitness journey by booking a session!</p>
+									<a href="user-booking.html" class="btn btn-primary" style="margin-top: 16px;">Book Now</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div data-tab-panel="settings" style="display: none;">
+						<div class="card">
+							<div class="card-header">
+								<h3>Account Settings</h3>
+							</div>
+							<div class="card-body">
+								<div class="form-group">
+									<label>Change Password</label>
+									<input type="password" class="input" placeholder="Current password" style="margin-bottom: 12px;" />
+									<input type="password" class="input" placeholder="New password" style="margin-bottom: 12px;" />
+									<input type="password" class="input" placeholder="Confirm new password" />
+								</div>
+								<div class="form-group">
+									<label>Notifications</label>
+									<div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+										<input type="checkbox" checked />
+										<span>Email notifications</span>
+									</div>
+									<div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
+										<input type="checkbox" checked />
+										<span>SMS notifications</span>
+									</div>
+								</div>
+								<button class="btn btn-primary">Update Settings</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="../js/main.js"></script>
+</body>
+</html>
+

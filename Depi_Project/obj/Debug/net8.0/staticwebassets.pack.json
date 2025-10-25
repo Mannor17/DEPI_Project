@@ -5,12 +5,24 @@
       "PackagePath": "staticwebassets\\Depi_Project.bundle.scp.css"
     },
     {
+      "Id": "D:\\رواد مصر الرقميه\\Project\\Depi_Project\\Depi_Project\\wwwroot\\assets\\icon.svg",
+      "PackagePath": "staticwebassets\\assets\\icon.svg"
+    },
+    {
       "Id": "D:\\رواد مصر الرقميه\\Project\\Depi_Project\\Depi_Project\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "D:\\رواد مصر الرقميه\\Project\\Depi_Project\\Depi_Project\\wwwroot\\css\\style.css",
+      "PackagePath": "staticwebassets\\css\\style.css"
+    },
+    {
       "Id": "D:\\رواد مصر الرقميه\\Project\\Depi_Project\\Depi_Project\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "D:\\رواد مصر الرقميه\\Project\\Depi_Project\\Depi_Project\\wwwroot\\js\\main.js",
+      "PackagePath": "staticwebassets\\js\\main.js"
     },
     {
       "Id": "D:\\رواد مصر الرقميه\\Project\\Depi_Project\\Depi_Project\\wwwroot\\js\\site.js",

@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<h2 class="text-center mt-4">Create Account</h2>
+
+<form asp-action="Register" method="post" class="card p-4 shadow-sm" style="max-width:600px; margin:auto;">
+    <div class="mb-3">
+        <label>Full Name</label>
+        <input type="text" name="fullName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label>Select Role</label>
+        <select name="role" class="form-control" required>
+            <option value="User">User</option>
+            <option value="GymOwner">Gym Owner</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Register</button>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div class="alert alert-danger mt-2">@error.ErrorMessage</div>
+        }
+    }
+</form>
