@@ -96,7 +96,7 @@
 
 <header class="header">
     <div class="container navbar">
-        <div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+        <div class="brand"><div class="logo"><a href="/Home/Index">🏋️</a></div> FitConnect</div>
         <nav class="navlinks">
             <a href="/User/Dashboard">Dashboard</a>
             <a href="/User/Profile">Profile</a>
@@ -106,95 +106,116 @@
 </header>
 
 <section>
-	<br /><br /><a href="d:\رواد مصر الرقميه\project\depi_project\depi_project\views\bookings\create.cshtml">d:\رواد مصر الرقميه\project\depi_project\depi_project\views\bookings\create.cshtml</a>
-<div class="container">
-    <h1 class="section-title">Book Your Session</h1>
-    <p class="section-sub">Choose your preferred date, time, and session type</p>
+    <br /><br />
+    <div class="container">
+        <h1 class="section-title">Book Your Session</h1>
+        <p class="section-sub">Choose your preferred date, time, and session type</p>
 
-    <form asp-action="Create" method="post">
-        <input type="hidden" asp-for="GymId" />
-        <input type="hidden" asp-for="GymName" />
-        <input type="hidden" asp-for="SelectedDate" />
-        <input type="hidden" asp-for="SelectedTime" />
-        <input type="hidden" asp-for="Price" />
-        <input type="hidden" asp-for="Type" />
+        <form asp-action="Create" asp-controller="bookings" method="post">
+            <input type="hidden" asp-for="GymId" />
+            <input type="hidden" asp-for="GymName" />
+            <input type="hidden" asp-for="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+            <input type="hidden" asp-for="SelectedTime" />
+            <input type="hidden" asp-for="Price" />
+            <input type="hidden" asp-for="Type" />
 
-        <div class="booking-layout">
+            <div class="booking-layout">
 
-            <!-- ░ SESSION TYPE ░ -->
-            <div>
-                <div class="card">
-                    <div class="card-header"><span>📋</span><h3>Session Type</h3></div>
-                    <div class="card-body">
-                        @foreach (var option in Model.SessionOptions)
-                        {
-                            <div class="session-option" data-type="@option.Type" data-price="@option.Price">
-                                <div style="display:flex;align-items:center;gap:12px;">
-                                    <div class="radio"></div>
-                                    <div>
-                                        <div style="font-weight:600;">@option.Name</div>
-                                        <div style="color:var(--muted);font-size:14px;">@option.Description</div>
-                                    </div>
-                                </div>
-                                <div class="price-badge">$@option.Price</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- ░ SELECT DATE ░ -->
-                <div class="card" style="margin-top:24px;">
-                    <div class="card-header"><span>📅</span><h3>Select Date</h3></div>
-                    <div class="card-body">
-                        <input type="date" class="form-control" id="datePicker" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
-                    </div>
-                </div>
-
-                <!-- ░ SELECT TIME ░ -->
-                <div class="card" style="margin-top:24px;">
-                    <div class="card-header"><span>⏰</span><h3>Select Time</h3></div>
-                    <div class="card-body">
-                        <div class="time-slots">
-                            @foreach (var time in new[] { "09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00" })
+                <!-- ░ SESSION TYPE ░ -->
+                <div>
+                    <div class="card">
+                        <div class="card-header"><span>📋</span><h3>Session Type</h3></div>
+                        <div class="card-body">
+                            @foreach (var option in Model.SessionOptions)
                             {
-                                <div class="time-slot" data-time="@time">@time</div>
+                                <div class="session-option" data-type="@option.Type" data-price="@option.Price">
+                                    <div style="display:flex;align-items:center;gap:12px;">
+                                        <div class="radio"></div>
+                                        <div>
+                                            <div style="font-weight:600;">@option.Name</div>
+                                            <div style="color:var(--muted);font-size:14px;">@option.Description</div>
+                                        </div>
+                                    </div>
+                                    <div class="price-badge">$@option.Price</div>
+                                </div>
                             }
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- ░ SUMMARY ░ -->
-            <div class="card">
-                <div class="card-header"><h3>Booking Summary</h3></div>
-                <div class="card-body">
-                    <div style="margin-bottom:16px;">
-                        <div style="color:var(--muted);font-size:14px;">Gym</div>
-                        <div style="font-weight:600;">@Model.GymName</div>
+                    <!-- ░ SELECT DATE ░ -->
+                    <div class="card" style="margin-top:24px;">
+                        <div class="card-header"><span>📅</span><h3>Select Date</h3></div>
+                        <div class="card-body">
+                            <input type="date" class="form-control" id="datePicker" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                        </div>
                     </div>
 
-                    <div id="summary-type"></div>
-                    <div id="summary-date"></div>
-                    <div id="summary-time"></div>
-
-                    <div style="text-align:right;margin-top:24px;">
-                        <div style="color:var(--muted);font-size:14px;">Total</div>
-                        <div id="summary-price" style="font-size:24px;font-weight:800;">$@Model.Price</div>
+                    <!-- ░ SELECT TIME ░ -->
+                    <div class="card" style="margin-top:24px;">
+                        <div class="card-header"><span>⏰</span><h3>Select Time</h3></div>
+                        <div class="card-body">
+                            <div class="time-slots">
+                                @foreach (var time in new[] { "09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00" })
+                                {
+                                    <div class="time-slot" data-time="@time">@time</div>
+                                }
+                            </div>
+                        </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary" style="width:100%;margin-top:20px;">
-                        Confirm Booking
-                    </button>
                 </div>
-            </div>
 
-        </div>
-    </form>
-</div>
+                <!-- ░ SUMMARY ░ -->
+                <div class="card">
+                    <div class="card-header"><h3>Booking Summary</h3></div>
+                    <div class="card-body">
+                        <div style="margin-bottom:16px;">
+                            <div style="color:var(--muted);font-size:14px;">Gym</div>
+                            <div style="font-weight:600;">@Model.GymName</div>
+                        </div>
+
+                        <div id="summary-type"></div>
+                        <div id="summary-date"></div>
+                        <div id="summary-time"></div>
+
+                        <div style="text-align:right;margin-top:24px;">
+                            <div style="color:var(--muted);font-size:14px;">Total</div>
+                            <div id="summary-price" style="font-size:24px;font-weight:800;">$@Model.Price</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:20px;">
+                            Confirm Booking
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
 </section>
 
 @section Scripts {
     <script>
+        // اختر أول session و time تلقائيًا
+        window.onload = () => {
+            // أول session
+            let firstSession = document.querySelector('.session-option');
+            if (firstSession) {
+                firstSession.click();
+            }
+
+            // أول time slot
+            let firstTime = document.querySelector('.time-slot');
+            if (firstTime) {
+                firstTime.click();
+            }
+
+            // التاريخ الحالي
+            let dateInput = document.getElementById("datePicker");
+            if (dateInput) {
+                dateInput.dispatchEvent(new Event('change'));
+            }
+        }
+
         // Session selection
         document.querySelectorAll('.session-option').forEach(e => {
             e.onclick = () => {
@@ -209,7 +230,7 @@
 
                 document.getElementById("summary-type").innerHTML =
                     `<div style="margin-bottom:16px;"><div style="color:var(--muted);font-size:14px;">Session</div>
-                             <div style="font-weight:600;">${e.dataset.type}</div></div>`;
+                                     <div style="font-weight:600;">${e.dataset.type}</div></div>`;
 
                 document.getElementById("summary-price").innerText = "$" + e.dataset.price;
             };
@@ -225,7 +246,7 @@
 
                 document.getElementById("summary-time").innerHTML =
                     `<div style="margin-bottom:16px;"><div style="color:var(--muted);font-size:14px;">Time</div>
-                             <div style="font-weight:600;">${slot.dataset.time}</div></div>`;
+                                     <div style="font-weight:600;">${slot.dataset.time}</div></div>`;
             };
         });
 
@@ -235,7 +256,7 @@
 
             document.getElementById("summary-date").innerHTML =
                 `<div style="margin-bottom:16px;"><div style="color:var(--muted);font-size:14px;">Date</div>
-                         <div style="font-weight:600;">${this.value}</div></div>`;
+                                 <div style="font-weight:600;">${this.value}</div></div>`;
         };
     </script>
 }

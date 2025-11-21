@@ -1,5 +1,6 @@
 ﻿@model GymDetailsViewModel
 
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -44,6 +45,7 @@
 			border-radius: 12px;
 			margin-bottom: 12px;
 		}
+
 
 		.thumbnail-grid {
 			display: grid;
@@ -154,7 +156,7 @@
 <body>
 	<header class="header">
 		<div class="container navbar">
-			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+			<div class="brand"><div class="logo"><a href="/Home/Index">🏋️</a></div> FitConnect</div>
 			<nav class="navlinks">
 				<a href="/User/Dashboard">Dashboard</a>
 				<a href="/User/Profile">Profile</a>
@@ -172,15 +174,20 @@
 
 					<!-- GALLERY -->
 					<div class="gym-gallery">
-						<img src="@(Model.Images.FirstOrDefault() ?? "~/assets/1.png")"
-							 class="main-image" />
+						@* <img src="@(Model.Images.FirstOrDefault() ?? "~/assets/7.jpg")"
+							 class="main-image" /> *@
+						<img src="@Url.Content(Model.Images.FirstOrDefault() ?? "~/assets/7.jpg")" class="main-image" />
+
 
 						<div class="thumbnail-grid">
 							@foreach (var img in Model.Images.Skip(1).Take(4))
 							{
-								<img src="@img" class="thumbnail" />
+								@* <img src="@img" class="thumbnail" /> *@
+								<img src="@Url.Content(img)" class="thumbnail" />
 							}
 						</div>
+
+
 					</div>
 
 					<!-- TABS -->
@@ -270,9 +277,14 @@
 
 						<form method="post" asp-controller="Favorites" asp-action="Add">
 							<input type="hidden" name="gymId" value="@Model.Id" />
-							<button class="btn btn-outline-primary" style="margin-top:12px; width:100%;">
+							@* <button class="btn btn-outline-primary" style="margin-top:12px; width:100%;">
 								❤️ Add to Favorites
-							</button>
+							</button> *@
+							<form method="post" action="/Gym/ToggleFavorite">
+								<input type="hidden" name="gymId" value="@Model.Id" />
+								<button class="btn btn-primary" style="margin-top:12px; width:100%;">❤️ Add to Favorites</button>
+							</form>
+
 						</form>
 
 

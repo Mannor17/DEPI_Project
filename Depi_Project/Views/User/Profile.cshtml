@@ -16,19 +16,85 @@
 		.input-group { position: relative; }
 		.input-group .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
 		.input-group .input { padding-left: 40px; }
+        /* bookings list styling (only) */
+.bookings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.booking-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #eef2f7;
+    padding: 12px 14px;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(18, 38, 63, 0.03);
+    font-size: 15px;
+    color: #243142;
+}
+
+.booking-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gym-name {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.booking-meta {
+    font-size: 13px;
+    color: var(--muted, #6b7280);
+}
+
+.booking-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: none;
+}
+
+/* paid / unpaid colors */
+.status.paid {
+    background: #e6fbf2;
+    color: #0f9d58;
+    border: 1px solid rgba(15,157,88,0.08);
+}
+
+.status.unpaid {
+    background: #fff5f5;
+    color: #d44b4b;
+    border: 1px solid rgba(212,75,75,0.08);
+}
+
+
 	</style>
 </head>
 <body>
-	<header class="header">
-		<div class="container navbar">
-			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
-			<nav class="navlinks">
-                <a asp-action="Dashboard" asp-controller="user">Dashboard</a>
-                <a asp-action="profile" asp-controller="user">Profile</a>
-                <a asp-action="logout" asp-controller="account">Logout</a>
-			</nav>
-		</div>
-	</header>
+    <header class="header">
+        <div class="container navbar">
+            <div class="brand"><div class="logo"><a href="/Home/Index">🏋️</a></div> FitConnect</div>
+            <nav class="navlinks">
+                <a href="/User/Dashboard">Dashboard</a>
+                <a href="/User/Profile">Profile</a>
+                <a href="/Account/Logout">Logout</a>
+            </nav>
+        </div>
+    </header>
 
     @model Depi_Project.Models.ViewModels.ProfileViewModel
 
@@ -57,13 +123,22 @@
                         <span>@Model.TotalBookings bookings total</span>
                     </div>
                 </div>
+              <div>
+                <div class="tabs" style="margin-bottom: 24px;">
+                    <div class="tab active" data-target="personal">Personal Info</div>
+                    <div class="tab" data-target="bookings">Bookings</div>
+                </div>
 
-                <div>
+            <div data-tab-panel="personal">
+              <div class="card">
+                            <div class="card-header">
+                                <h3>Personal Information</h3>
+                            </div>
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">@TempData["SuccessMessage"]</div>
                     }
-
+                <div class="card-body">
                     <form asp-action="UpdateProfile" method="post">
                         <input type="hidden" asp-for="Id" />
                         <div class="form-group">
@@ -94,30 +169,54 @@
 
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </form>
+                </div>
+              </div>
+            </div>
 
-                    <hr />
-
-                    <div>
-                        <h4>Recent Bookings</h4>
+                    <div data-tab-panel="bookings" style="display: none;">
+                        <div class="card">
+                        <div class="card-header">
+                            <h3>My Bookings</h3>
+                        </div>
+                            <div class="card-body">
+                                <div style="text-align: center; padding: 40px; color: var(--muted);">
                         @if (Model.Bookings != null && Model.Bookings.Any())
                         {
-                            <ul>
-                                @foreach (var b in Model.Bookings)
-                                {
-                                    <li>
-                                        @b.Gym?.Name ?? "Gym"
-                                        - @b.Type
-                                        - @b.StartDate.ToString("dd MMM yyyy")
-                                        - @(b.IsPaid ? "Paid" : "Not paid")
+                            <ul class="bookings-list">
+                               @foreach (var b in Model.Bookings)
+                                 {
+                                    <li class="booking-item">
+                                    <div class="booking-left">
+                                    <div class="gym-name">@(!string.IsNullOrEmpty(b.Gym?.Name) ? b.Gym.Name : "Gym")</div>
+                                    <div class="booking-meta">@b.Type • @b.StartDate.ToString("dd MMM yyyy")</div>
+                                    </div>
+
+                                    <div class="booking-right">
+                                       <span class="status @(b.IsPaid ? "paid" : "unpaid")">
+                                             @(b.IsPaid ? "Paid" : "Not paid")
+                                        </span>
+                                    </div>
                                     </li>
-                                }
+                                 }
                             </ul>
+
                         }
                         else
                         {
-                            <div style="padding:20px;color:var(--muted)">No recent bookings.</div>
+                            <div style="padding:20px;color:var(--muted)">
+                                <div class="card-body">
+                                    <div style="text-align: center; padding: 40px; color: var(--muted);">
+                                        <div style="font-size: 48px; margin-bottom: 16px;">📅</div>
+                                        <h4>No bookings yet</h4>
+                                        <p>Start your fitness journey by booking a session!</p>
+                                        <a href="user-booking.html" class="btn btn-primary" style="margin-top: 16px;">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     </div>
+
+
                 </div>
             </div>
         </div>

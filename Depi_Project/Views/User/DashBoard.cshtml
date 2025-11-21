@@ -22,7 +22,7 @@
 <body>
 	<header class="header">
 		<div class="container navbar">
-			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+			<div class="brand"><div class="logo"><a href="/Home/Index">🏋️</a></div> FitConnect</div>
 			<nav class="navlinks">
 				<a href="/User/Dashboard">Dashboard</a>
 				<a href="/User/Profile">Profile</a>
@@ -35,40 +35,45 @@
 		<div class="container">
 			<h1 class="section-title">Welcome, @Model.UserName 👋</h1>
 
-			<h2 class="section-title">Featured Gyms</h2>
-			<div class="grid grid-3">
-				@foreach (var gym in Model.Gyms)
-				{
-					<div class="card gym-card">
-						<img src="@(gym.Media?.FirstOrDefault()?.Url ?? "/assets/default-gym.jpg")" alt="@gym.Name" />
-						<div class="card-body">
-							<h3>
-								@gym.Name <span class="badge gray" style="margin-left:8px">
-									@(gym.Reviews?.Any() == true ? gym.Reviews.Average(r => r.Rating).ToString("0.0") : "N/A")
-								</span>
-							</h3>
-							<p class="section-sub" style="margin:6px 0">@gym.Address</p>
-							<div style="display:flex;justify-content:space-between;align-items:center">
-								<a class="btn btn-primary" href="/Gym/Details/@gym.Id">View Details</a>
+			<h3 class="section-title" style="margin-top:40px">Featured Gyms</h3>
+
+			@if (Model.Favorite.Any())
+			{
+				<div class="grid grid-3">
+					@foreach (var gym in Model.Favorite)
+					{
+						<div class="card gym-card">
+							<div class="card-body">
+								<h3>@gym.Name</h3>
+								<p class="section-sub" style="margin:6px 0">@gym.Address</p>
+								<div style="display:flex;justify-content:space-between;align-items:center">
+									<div class="section-sub">$@gym.PricePerMonth/month</div>
+									<a class="btn btn-primary" href="/user/Details/@gym.Id">View Details</a>
+								</div>
 							</div>
 						</div>
-					</div>
-				}
-			</div>
+					}
+				</div>
+			}
+			else
+			{
+				<p class="section-sub">You don't have any favorites yet.</p>
+			}
+
 
 			<div class="grid grid-3" style="margin-top:26px">
 				<div class="card">
-					<div class="badge teal">⏰ Upcoming Bookings</div>
+					<div class="badge teal" style="width:50%">⏰ Upcoming Bookings</div>
 					<h2 class="section-title">@Model.UpcomingBookings</h2>
 					<p class="section-sub">This week</p>
 				</div>
 				<div class="card">
-					<div class="badge orange">🏋️ Total Gyms</div>
-					@* <h2 class="section-title">@Model.TotalGyms</h2> *@
+					<div class="badge orange" style="width:35%">🏋️ Total Gyms</div>
+					<h2 class="section-title">@Model.Gyms.Count</h2>
 					<p class="section-sub">In the system</p>
 				</div>
 				<div class="card">
-					<div class="badge gray">💳 Total Spent</div>
+					<div class="badge gray" style="width:35%">💳 Total Spent</div>
 					<h2 class="section-title">$@Model.TotalSpent</h2>
 					<p class="section-sub">Total Paid</p>
 				</div>

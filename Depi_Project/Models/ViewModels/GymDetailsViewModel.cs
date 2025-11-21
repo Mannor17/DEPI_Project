@@ -23,5 +23,6 @@
 		// إذا عندك كلاس Review و Trainer في المشروع:
 		public List<Review> Reviews { get; set; } = new();
 		public List<Trainer> Trainers { get; set; } = new();
+
 	}
 }

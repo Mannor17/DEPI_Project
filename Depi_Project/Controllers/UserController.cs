@@ -21,32 +21,6 @@ namespace Depi_Project.Controllers
             _userManager = userManager;
         }
 
-		//[HttpGet]
-		//public IActionResult Search(string? name, string? address, double? lat, double? lng, double? minRating)
-		//{
-		//	var gyms = _context.Gyms.Include(g => g.Reviews).AsQueryable();
-
-		//	if (!string.IsNullOrEmpty(name))
-		//		gyms = gyms.Where(g => g.Name.Contains(name));
-
-		//	if (!string.IsNullOrEmpty(address))
-		//		gyms = gyms.Where(g => g.Address.Contains(address));
-
-		//	// ترتيب الأقرب أولًا حسب Lat / Lng
-		//	if (lat.HasValue && lng.HasValue)
-		//	{
-		//		gyms = gyms.OrderBy(g =>
-		//			Math.Sqrt(Math.Pow(g.Latitude - lat.Value, 2) + Math.Pow(g.Longitude - lng.Value, 2))
-		//		);
-		//	}
-
-		//	if (minRating.HasValue)
-		//		gyms = gyms.Where(g => g.Reviews.Any() && g.Reviews.Average(r => r.Rating) >= minRating.Value);
-
-		//	var results = gyms.Take(50).ToList();
-
-		//	return View(results);
-		//}
 
 		[HttpGet]
 		public IActionResult Search(string name, string address, string priceRange, string rating, double? lat, double? lng)
@@ -102,10 +76,6 @@ namespace Depi_Project.Controllers
 			var results = gyms.Take(50).ToList();
 			return View(results);
 		}
-
-
-
-
 
 		[HttpPost]
         public IActionResult Search(GymSearchViewModel model)
@@ -176,54 +146,77 @@ namespace Depi_Project.Controllers
 		}
 
 
+        public async Task<IActionResult> Dashboard()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var userId = _userManager.GetUserId(User);
 
+            // 1) Total Spent
+            var totalSpent = await _context.Bookings
+                .Where(b => b.UserId == userId && b.IsPaid == true)
+                .SumAsync(b => (decimal?)b.Amount ?? 0);
 
-		public async Task<IActionResult> Dashboard()
-		{ 
-			// Get Current Logged-in User
-			var user = await _userManager.GetUserAsync(User);
+            // 2) Upcoming Bookings
+            var upcomingBookings = await _context.Bookings
+                .Where(b => b.UserId == userId && b.StartDate >= DateTime.Now)
+                .CountAsync();
+
+            // 3) Favorite gyms list
+            var favoriteGyms = await _context.Favorites
+                .Where(f => f.UserId == userId)
+                .Include(f => f.Gym)
+                    .ThenInclude(g => g.Media)
+                .Include(f => f.Gym)
+                    .ThenInclude(g => g.Reviews)
+                .Select(f => f.Gym)
+                .ToListAsync();
+
+            // 4) Featured Gyms
+            var gyms = await _context.Gyms
+                .Include(g => g.Media)
+                .Include(g => g.Reviews)
+                .Take(6)
+                .ToListAsync();
+
+            // View Model
+            var model = new UserDashboardViewModel
+            {
+                UserName = user.FullName,
+                TotalSpent = totalSpent,
+                UpcomingBookings = upcomingBookings,
+                FavoriteGyms = favoriteGyms.Count,
+                Gyms = gyms,
+                Favorite = favoriteGyms
+            };
+
+            return View(model);
+        }
+
+		[HttpPost]
+		public async Task<IActionResult> ToggleFavorite(int gymId)
+		{
 			var userId = _userManager.GetUserId(User);
 
-			// Total Spent
-			//var totalSpent = _context.Bookings
-			//	.Where(b => b.UserId == userId && b.PaymentStatus == "Completed")
-			//	.Sum(b => (decimal?)b.TotalPrice) ?? 0;
+			var existing = await _context.Favorites
+				.FirstOrDefaultAsync(f => f.UserId == userId && f.GymId == gymId);
 
-			//// Upcoming Bookings
-			//var upcomingBookings = _context.Bookings
-			//	.Where(b => b.UserId == userId && b.BookingDate >= DateTime.Now)
-			//	.Include(b => b.Gym)
-			//	.ToList();
-
-			// Featured Gyms
-			var gyms = _context.Gyms
-				.Include(g => g.Media)
-				.Include(g => g.Reviews)
-				.Take(6)
-				.ToList();
-
-			// FAVORITES
-			var favoriteGyms = _context.Favorites
-				.Where(f => f.UserId == userId)
-				.Include(f => f.Gym)
-					.ThenInclude(g => g.Media)
-				.Include(f => f.Gym)
-					.ThenInclude(g => g.Reviews)
-				.Select(f => f.Gym)
-				.ToList();
-
-			// Prepare Model
-			var model = new UserDashboardViewModel
+			if (existing != null)
 			{
-				UserName = user.FullName,
-				//TotalSpent = totalSpent,
-				//UpcomingBookings = upcomingBookings,
-				Gyms = gyms,
-				Favorite = favoriteGyms
-			};
+				_context.Favorites.Remove(existing);
+			}
+			else
+			{
+				_context.Favorites.Add(new Favorite
+				{
+					UserId = userId,
+					GymId = gymId
+				});
+			}
 
-			return View(model);
+			await _context.SaveChangesAsync();
+			return RedirectToAction("Details", "Gym", new { id = gymId });
 		}
+
 
 
 		// GET: /User/Profile
@@ -274,15 +267,9 @@ namespace Depi_Project.Controllers
             if (currentUser == null || currentUser.Id != model.Id)
                 return Forbid();
 
-            // ============================
-            // تحديث FullName و IsProfilePublic مباشرة (حقل خاص)
-            // ============================
             currentUser.FullName = model.FullName;
             currentUser.IsProfilePublic = model.IsProfilePublic;
 
-            // ============================
-            // تحديث PhoneNumber باستخدام UserManager (حتى يتم التعامل مع التحقق إن وُجد)
-            // ============================
             if (model.PhoneNumber != currentUser.PhoneNumber)
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(currentUser, model.PhoneNumber);
@@ -293,15 +280,10 @@ namespace Depi_Project.Controllers
                 }
             }
 
-            // ============================
-            // تحديث Email (إذا تغير) -- يفضل استخدام ChangeEmailAsync
-            // ملاحظة: لو عندك Email confirmation مفعّل، لازم تتعامل مع Token وإرسال رسالة.
-            // هنا سنغير البريد مباشرة عبر UserManager (قد تحتاجي إضافة تحقق حسب الإعداد).
-            // ============================
+            
             if (!string.Equals(model.Email, currentUser.Email, StringComparison.OrdinalIgnoreCase))
             {
-                // نستخدم ChangeEmailAsync إن كان لديك دعم لـ email confirmation،
-                // وإلا نستخدم SetEmailAsync (SetEmailAsync لن يغيّر UserName تلقائياً).
+                
                 var token = await _userManager.GenerateChangeEmailTokenAsync(currentUser, model.Email);
                 var changeEmailResult = await _userManager.ChangeEmailAsync(currentUser, model.Email, token);
                 if (!changeEmailResult.Succeeded)

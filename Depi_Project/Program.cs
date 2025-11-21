@@ -3,6 +3,7 @@ using Depi_Project.Models;
 using Depi_Project.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace Depi_Project
 {
@@ -38,7 +39,11 @@ namespace Depi_Project
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+			// Configure Stripe
+			StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+
+			var app = builder.Build();
 
 
             // 3. Seed Roles

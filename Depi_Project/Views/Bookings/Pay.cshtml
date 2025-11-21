@@ -1,4 +1,8 @@
-﻿<!doctype html>
+﻿@model Depi_Project.Models.ViewModels.PaymentViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+
+<!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -6,25 +10,92 @@
 	<title>Payment • FitConnect</title>
 	<link rel="stylesheet" href="../css/style.css" />
 	<style>
-		.payment-layout { display: grid; grid-template-columns: 1fr 400px; gap: 24px; margin-top: 24px; }
-		.payment-methods { display: flex; gap: 12px; margin-bottom: 20px; }
-		.payment-method { flex: 1; padding: 12px; border: 2px solid #e5edf5; border-radius: 8px; text-align: center; cursor: pointer; transition: .2s; }
-		.payment-method.selected { border-color: var(--primary); background: rgba(16,196,207,.05); }
-		.payment-method .icon { font-size: 24px; margin-bottom: 8px; }
-		.card-form { display: grid; gap: 16px; }
-		.card-row { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
-		.security-badges { display: flex; gap: 8px; margin-top: 16px; }
-		.security-badge { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 12px; }
-		.summary-item { display: flex; justify-content: space-between; margin: 8px 0; }
-		.summary-total { border-top: 1px solid #eef2f7; padding-top: 16px; margin-top: 16px; }
-		.success-message { text-align: center; padding: 40px; }
-		.success-icon { font-size: 64px; color: var(--success); margin-bottom: 16px; }
+		.payment-layout {
+			display: grid;
+			grid-template-columns: 1fr 400px;
+			gap: 24px;
+			margin-top: 24px;
+		}
+
+		.payment-methods {
+			display: flex;
+			gap: 12px;
+			margin-bottom: 20px;
+		}
+
+		.payment-method {
+			flex: 1;
+			padding: 12px;
+			border: 2px solid #e5edf5;
+			border-radius: 8px;
+			text-align: center;
+			cursor: pointer;
+			transition: .2s;
+		}
+
+			.payment-method.selected {
+				border-color: var(--primary);
+				background: rgba(16,196,207,.05);
+			}
+
+			.payment-method .icon {
+				font-size: 24px;
+				margin-bottom: 8px;
+			}
+
+		.card-form {
+			display: grid;
+			gap: 16px;
+		}
+
+		.card-row {
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			gap: 12px;
+		}
+
+		.security-badges {
+			display: flex;
+			gap: 8px;
+			margin-top: 16px;
+		}
+
+		.security-badge {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			color: var(--muted);
+			font-size: 12px;
+		}
+
+		.summary-item {
+			display: flex;
+			justify-content: space-between;
+			margin: 8px 0;
+		}
+
+		.summary-total {
+			border-top: 1px solid #eef2f7;
+			padding-top: 16px;
+			margin-top: 16px;
+		}
+
+		.success-message {
+			text-align: center;
+			padding: 40px;
+		}
+
+		.success-icon {
+			font-size: 64px;
+			color: var(--success);
+			margin-bottom: 16px;
+		}
 	</style>
 </head>
 <body>
 	<header class="header">
 		<div class="container navbar">
-			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+			<div class="brand"><div class="logo"><a href="/Home/Index">🏋️</a></div> FitConnect</div>
 			<nav class="navlinks">
 				<a href="/User/Dashboard">Dashboard</a>
 				<a href="/User/Profile">Profile</a>
@@ -37,7 +108,7 @@
 		<div class="container">
 			<h1 class="section-title">Complete Your Payment</h1>
 			<p class="section-sub">Secure payment for your gym session</p>
-			
+
 			<div class="payment-layout">
 				<div>
 					<div class="card">
@@ -61,45 +132,48 @@
 								</div>
 							</div>
 
-							<div class="card-form">
-								<div>
-									<label>Card Number</label>
-									<input class="input" placeholder="1234 5678 9012 3456" />
-								</div>
-								<div class="card-row">
+							<form id="payment-form">
+								<input type="hidden" name="PaymentMethod" id="payment-method-value" value="Credit Card" />
+								<div class="card-form">
 									<div>
-										<label>Expiry Date</label>
-										<input class="input" placeholder="MM/YY" />
+										<label>Card Number</label>
+										<div id="card-element" class="input"></div>
+										<div id="card-errors" role="alert" style="color:red; margin-top:12px;"></div>
+									</div>
+									<div class="card-row">
+										<div>
+											<label>Expiry Date</label>
+											<input class="input" placeholder="MM/YY" />
+										</div>
+										<div>
+											<label>CVV</label>
+											<input class="input" placeholder="123" />
+										</div>
 									</div>
 									<div>
-										<label>CVV</label>
-										<input class="input" placeholder="123" />
+										<label>Cardholder Name</label>
+										<input class="input" placeholder="John Doe" />
+									</div>
+									<div>
+										<label>Billing Address</label>
+										<input class="input" placeholder="123 Main Street, City" />
 									</div>
 								</div>
-								<div>
-									<label>Cardholder Name</label>
-									<input class="input" placeholder="John Doe" />
+								<div class="security-badges">
+									<div class="security-badge">
+										<span>🔒</span>
+										<span>SSL Encrypted</span>
+									</div>
+									<div class="security-badge">
+										<span>🛡️</span>
+										<span>PCI Compliant</span>
+									</div>
+									<div class="security-badge">
+										<span>✅</span>
+										<span>3D Secure</span>
+									</div>
 								</div>
-								<div>
-									<label>Billing Address</label>
-									<input class="input" placeholder="123 Main Street, City" />
-								</div>
-							</div>
-
-							<div class="security-badges">
-								<div class="security-badge">
-									<span>🔒</span>
-									<span>SSL Encrypted</span>
-								</div>
-								<div class="security-badge">
-									<span>🛡️</span>
-									<span>PCI Compliant</span>
-								</div>
-								<div class="security-badge">
-									<span>✅</span>
-									<span>3D Secure</span>
-								</div>
-							</div>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -112,34 +186,29 @@
 						<div class="card-body">
 							<div class="summary-item">
 								<span>Session Type</span>
-								<span>Day Pass</span>
+								<span>@Model.Booking.Type</span>
 							</div>
 							<div class="summary-item">
 								<span>Gym</span>
-								<span>PowerFit Gym</span>
+								<span>@Model.Booking.Gym.Name</span>
 							</div>
 							<div class="summary-item">
 								<span>Date & Time</span>
-								<span>Oct 23, 11:00 AM</span>
-							</div>
-							<div class="summary-item">
-								<span>Service Fee</span>
-								<span>$0.00</span>
-							</div>
-							<div class="summary-item">
-								<span>Tax</span>
-								<span>$1.20</span>
+								<span>@Model.Booking.StartDate.ToString("dd MMM yyyy, hh:mm tt")</span>
 							</div>
 							<div class="summary-total">
 								<div class="summary-item">
 									<span style="font-weight: 700; font-size: 18px;">Total</span>
-									<span style="font-weight: 800; font-size: 24px;">$16.20</span>
+									<span style="font-weight: 800; font-size: 24px;">$@Model.Booking.Amount</span>
 								</div>
 							</div>
-							<button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="processPayment()">Pay $16.20</button>
 							<div style="color: var(--muted); font-size: 12px; text-align: center; margin-top: 12px;">
 								By completing this payment, you agree to our Terms of Service
 							</div>
+							<!-- زرار الدفع برا الفورم -->
+							<button id="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+								Pay $@Model.Booking.Amount
+							</button>
 						</div>
 					</div>
 				</div>
@@ -147,74 +216,56 @@
 		</div>
 	</section>
 
-	<!-- Success Modal -->
-	<div id="successModal" class="modal">
-		<div class="dialog">
-			<div class="head">
-				<h3>Payment Successful!</h3>
-				<button data-close style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
-			</div>
-			<div class="content">
-				<div class="success-message">
-					<div class="success-icon">✅</div>
-					<h3>Booking Confirmed!</h3>
-					<p>Your gym session has been booked successfully.</p>
-					<div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 20px 0;">
-						<div style="font-weight: 600; margin-bottom: 8px;">Booking Details:</div>
-						<div>📍 PowerFit Gym</div>
-						<div>📅 Thursday, October 23, 2025</div>
-						<div>⏰ 11:00 AM</div>
-						<div>💳 Payment: $16.20</div>
-					</div>
-					<div style="display: flex; gap: 12px; justify-content: center;">
-						<a href="user-dashboard.html" class="btn btn-primary">Go to Dashboard</a>
-						<a href="user-booking.html" class="btn btn-ghost">Book Another</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<script src="../js/main.js"></script>
+	<script src="https://js.stripe.com/v3/"></script>
 	<script>
+		const stripe = Stripe("@Model.PublishableKey");
+		const elements = stripe.elements();
+		const cardElement = elements.create('card');
+		cardElement.mount('#card-element');
+
+		const submitButton = document.getElementById('submit');
+
+		submitButton.addEventListener('click', async () => {
+			submitButton.disabled = true;
+			submitButton.textContent = "Processing...";
+
+			const { error, paymentIntent } = await stripe.confirmCardPayment("@Model.ClientSecret", {
+				payment_method: { card: cardElement }
+			});
+
+			if (error) {
+				document.getElementById('card-errors').textContent = error.message;
+				submitButton.disabled = false;
+				submitButton.textContent = "Pay $@Model.Booking.Amount";
+			} else if (paymentIntent.status === 'succeeded') {
+				// POST request لتأكيد الدفع
+				const response = await fetch('/Bookings/ConfirmPayment?id=@Model.Booking.Id&transactionId=' + paymentIntent.id, {
+					method: 'POST',
+					headers: {
+						'RequestVerificationToken': '@Antiforgery.GetTokens(Context).RequestToken'
+					}
+				});
+
+				if (response.ok) {
+					window.location.href = '/Bookings/PaymentSuccess?id=@Model.Booking.Id';
+				} else {
+					document.getElementById('card-errors').textContent = "Payment confirmation failed.";
+					submitButton.disabled = false;
+					submitButton.textContent = "Pay $@Model.Booking.Amount";
+				}
+			}
+
+		});
+
 		// Payment method selection
 		document.querySelectorAll('.payment-method').forEach(method => {
 			method.addEventListener('click', () => {
 				document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
 				method.classList.add('selected');
+				document.getElementById('payment-method-value').value = method.innerText.trim();
 			});
 		});
 
-		// Payment processing
-		function processPayment() {
-			// Simulate payment processing
-			const button = document.querySelector('button[onclick="processPayment()"]');
-			button.textContent = 'Processing...';
-			button.disabled = true;
-			
-			setTimeout(() => {
-				document.getElementById('successModal').classList.add('open');
-			}, 2000);
-		}
-
-		// Card number formatting
-		document.querySelector('input[placeholder="1234 5678 9012 3456"]').addEventListener('input', (e) => {
-			let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
-			let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-			if (formattedValue.length <= 19) {
-				e.target.value = formattedValue;
-			}
-		});
-
-		// Expiry date formatting
-		document.querySelector('input[placeholder="MM/YY"]').addEventListener('input', (e) => {
-			let value = e.target.value.replace(/\D/g, '');
-			if (value.length >= 2) {
-				value = value.substring(0, 2) + '/' + value.substring(2, 4);
-			}
-			e.target.value = value;
-		});
 	</script>
 </body>
 </html>
-

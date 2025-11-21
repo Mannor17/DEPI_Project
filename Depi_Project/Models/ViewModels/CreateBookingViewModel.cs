@@ -13,6 +13,8 @@
 		public decimal Price { get; set; }
 
 		public List<GymSessionOption> SessionOptions { get; set; } = new();
+		public List<Trainer> Trainers { get; set; }
+
 	}
 	public class GymSessionOption
 	{
