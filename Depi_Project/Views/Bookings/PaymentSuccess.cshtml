@@ -1,0 +1,21 @@
+﻿@model Depi_Project.Models.Booking
+
+@{
+    Layout = "_Layout";
+}
+
+<div style="text-align:center; padding:60px;">
+    <h2>Processing Payment...</h2>
+
+    <div style="font-size:60px; margin:20px 0;">
+        ⏳
+    </div>
+
+    <p>Please wait while we confirm your booking.</p>
+</div>
+
+<script>
+    setTimeout(function () {
+        window.location.href = '/Bookings/Details/@Model.Id';
+    }, 2500);
+</script>

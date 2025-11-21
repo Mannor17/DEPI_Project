@@ -14,6 +14,7 @@ namespace Depi_Project.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<GymMedia> GymMedias { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

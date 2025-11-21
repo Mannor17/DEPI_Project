@@ -1,0 +1,313 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Find Your Perfect Gym • FitConnect</title>
+	<link rel="stylesheet" href="../css/style.css" />
+	<style>
+		.search-hero {
+			background: linear-gradient(135deg, var(--primary), var(--primary-600));
+			color: white;
+			padding: 60px 0;
+			text-align: center;
+		}
+
+			.search-hero h1 {
+				font-size: clamp(32px, 5vw, 48px);
+				margin: 0 0 16px;
+				font-weight: 800;
+			}
+
+			.search-hero p {
+				font-size: clamp(16px, 2vw, 20px);
+				opacity: 0.9;
+				margin: 0 0 32px;
+			}
+
+		.search-bar {
+			background: white;
+			border-radius: 12px;
+			padding: 8px;
+			display: flex;
+			gap: 8px;
+			max-width: 800px;
+			margin: 0 auto;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+		}
+
+		.search-input {
+			flex: 1;
+			border: none;
+			padding: 12px 16px;
+			font-size: 16px;
+			outline: none;
+		}
+
+			.search-input::placeholder {
+				color: var(--muted);
+			}
+
+		.search-btn {
+			background: var(--primary);
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 8px;
+			font-weight: 600;
+			cursor: pointer;
+		}
+
+		.location-btn {
+			background: #eee;
+			color: #333;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 8px;
+			cursor: pointer;
+		}
+
+		.filters {
+			display: flex;
+			gap: 16px;
+			margin: 24px 0;
+			flex-wrap: wrap;
+		}
+
+		.filter-group {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+			.filter-group label {
+				font-weight: 600;
+				color: var(--text);
+			}
+
+			.filter-group select {
+				min-width: 150px;
+			}
+
+		.gym-card {
+			transition: transform 0.2s;
+		}
+
+			.gym-card:hover {
+				transform: translateY(-4px);
+			}
+
+		.gym-image {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+			border-radius: 12px;
+			margin-bottom: 16px;
+		}
+
+		.gym-rating {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin: 8px 0;
+		}
+
+		.star {
+			color: var(--accent);
+		}
+
+		.gym-features {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin: 12px 0;
+		}
+
+		.feature-tag {
+			background: #eef2f7;
+			color: var(--muted);
+			padding: 4px 8px;
+			border-radius: 12px;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	<header class="header">
+		<div class="container navbar">
+			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+			<nav class="navlinks">
+				<a href="/User/Dashboard">Dashboard</a>
+				<a href="/User/Profile">Profile</a>
+				<a href="/Account/Logout">Logout</a>
+			</nav>
+		</div>
+	</header>
+
+	<section class="search-hero">
+		<div class="container">
+			<h1>Find Your Perfect Gym</h1>
+			<p>Discover and book gym sessions near you</p>
+			<form method="get" asp-action="Search" asp-controller="User" id="searchForm">
+
+				<div class="search-bar">
+					<input name="name" class="search-input" placeholder="Search gym name..." />
+					<input name="address" class="search-input" placeholder="Enter address..." />
+					<input type="hidden" name="lat" id="lat" />
+					<input type="hidden" name="lng" id="lng" />
+					<button type="submit" class="search-btn">Search</button>
+					@* <button type="button" class="location-btn" onclick="getLocation()">📍</button> *@
+					<button type="button" class="location-btn" onclick="autoDetectAddress()">📍</button>
+
+				</div>
+
+			</form>
+
+
+		</div>
+	</section>
+
+
+	<section class="section">
+		<div class="container">
+			<form method="get" asp-action="Search" asp-controller="User" id="searchForm">
+				<div class="filters">
+					<div class="filter-group">
+						<label>Price Range</label>
+						<select name="priceRange" class="select">
+							<option value="">Any Price</option>
+							<option value="under30">Under $30/month</option>
+							<option value="30to50">$30-50/month</option>
+							<option value="50to80">$50-80/month</option>
+							<option value="over80">Over $80/month</option>
+						</select>
+					</div>
+
+					<div class="filter-group">
+						<label>Rating</label>
+						<select name="rating" class="select">
+							<option value="">Any Rating</option>
+							<option value="4">4+ Stars</option>
+							<option value="4.5">4.5+ Stars</option>
+							<option value="5">5 Stars</option>
+						</select>
+					</div>
+				</div>
+
+			</form>
+
+			@model List<Depi_Project.Models.Gym>
+
+			@if (Model != null && Model.Any())
+			{
+				<div id="searchResults" class="grid grid-3">
+					@foreach (var gym in Model)
+					{
+						<div class="card gym-card">
+							@* <img src="@(gym.Media?.FirstOrDefault(m => m.Type == "Image")?.Url ?? "~/assets/1.png")" alt="@gym.Name" class="gym-image" /> *@
+							<h3>@gym.Name</h3>
+							<p>@gym.Name</p>
+							<p>📍 @gym.Address</p>
+							
+							
+							<div class="gym-rating">
+								<span class="star">⭐</span>
+								<span>@(gym.Reviews.Any() ? gym.Reviews.Average(r => r.Rating).ToString("0.0") : "No reviews")</span>
+								<span style="color:gray;">(@gym.Reviews.Count) reviews</span>
+							</div>
+							<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+								<div class="gym-price">$@gym.PricePerMonth/month</div>
+								<a asp-action="Details" asp-controller="user" asp-route-id="@gym.Id" class="btn btn-primary">View Details</a>
+							
+							</div>
+							<br />
+								<a class="btn btn-success"
+								   href="https://www.google.com/maps/search/?api=1&query=@gym.Latitude,@gym.Longitude"
+								   target="_blank">
+									opem in map
+								</a>
+							
+							
+						</div>
+					}
+				</div>
+			}
+			else
+			{
+				<p style="text-align:center; margin-top:40px;">No gyms found matching your criteria.</p>
+			}
+		</div>
+	</section>
+
+
+	<script>
+
+			function autoDetectAddress() {
+				if (!navigator.geolocation) {
+					alert("Your browser does not support GPS.");
+					return;
+				}
+
+				navigator.geolocation.getCurrentPosition(async position => {
+					const lat = position.coords.latitude;
+					const lng = position.coords.longitude;
+
+					document.getElementById("lat").value = lat;
+					document.getElementById("lng").value = lng;
+
+					// تحويل الإحداثيات لعنوان باستخدام API مجاني من OpenStreetMap
+					const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+
+					try {
+						const response = await fetch(url);
+						const data = await response.json();
+
+						const address = data.display_name || "";
+						document.querySelector("input[name='address']").value = address;
+
+						alert("Location detected and added to search ✔️");
+
+					} catch (e) {
+						alert("Couldn't convert location to address ❌");
+					}
+				});
+			}
+
+
+
+		function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+			} else {
+				alert("Your browser does not support GPS location.");
+			}
+		}
+
+		function successCallback(position) {
+			const lat = position.coords.latitude;
+			const lng = position.coords.longitude;
+			document.getElementById("lat").value = lat;
+			document.getElementById("lng").value = lng;
+			alert(`Location set ✅\nLatitude: ${lat}\nLongitude: ${lng}`);
+		}
+
+		function errorCallback(error) {
+			switch (error.code) {
+				case error.PERMISSION_DENIED:
+					alert("You denied location access ❌");
+					break;
+				case error.POSITION_UNAVAILABLE:
+					alert("Location info unavailable ❌");
+					break;
+				case error.TIMEOUT:
+					alert("Request timed out ⏱️");
+					break;
+				default:
+					alert("Unknown error occurred.");
+			}
+		}
+	</script>
+
+	<script src="../js/main.js"></script>
+</body>
+</html>

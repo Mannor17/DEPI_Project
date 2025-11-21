@@ -23,55 +23,58 @@ namespace Depi_Project.Controllers
             _paymentService = paymentService;
         }
 
-        public IActionResult Create(int gymId, BookingType type)
-        {
-            var vm = new CreateBookingViewModel
-            {
-                GymId = gymId,
-                Type = type
-            };
-            return View(vm);
-        }
+		public async Task<IActionResult> Create(int gymId)
+		{
+			var gym = await _db.Gyms.FindAsync(gymId);
+			if (gym == null) return NotFound();
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateBookingViewModel vm)
-        {
-            if (!ModelState.IsValid)
-                return View(vm);
+			var vm = new CreateBookingViewModel
+			{
+				GymId = gym.Id,
+				GymName = gym.Name,
 
-            var booking = new Booking
-            {
-                GymId = vm.GymId,
-                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                Type = vm.Type,
-                StartDate = vm.StartDate,
-                EndDate = vm.EndDate,
-                TrainerId = vm.TrainerId,
-                Amount = vm.Amount
-            };
+				// الأنواع المتاحة للحجز
+				SessionOptions = new List<GymSessionOption>
+		{
+			new GymSessionOption { Type = BookingType.ByDay, Name="Day Pass", Price=15, Description="Full facility access" },
+			new GymSessionOption { Type = BookingType.WithTrainer, Name="Personal Training", Price=60, Description="1-hour session" },
+			new GymSessionOption { Type = BookingType.WithTrainer, Name="Group Class", Price=25, Description="Join a group class" },
+		},
 
-            // ✅ التحقق من وجود حجز مشابه لنفس المستخدم والتاريخ
-            var exists = await _db.Bookings.AnyAsync(b =>
-                b.UserId == booking.UserId &&
-                b.GymId == booking.GymId &&
-                b.StartDate == booking.StartDate &&
-                !b.IsCancelled);
+				Price = 15, // default
+				Type = BookingType.ByDay,
+				SelectedDate = DateTime.Today
+			};
 
-            if (exists)
-            {
-                ModelState.AddModelError("", "لديك حجز مشابه بالفعل في نفس التاريخ.");
-                return View(vm);
-            }
+			return View(vm);
+		}
 
-            await _db.Bookings.AddAsync(booking);
-            await _db.SaveChangesAsync();
 
-            // بعد إنشاء الحجز، الانتقال لصفحة الدفع
-            return RedirectToAction(nameof(Pay), new { id = booking.Id });
-        }
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create(CreateBookingViewModel vm)
+		{
+			if (!ModelState.IsValid)
+				return View(vm);
 
-        public async Task<IActionResult> Pay(int id)
+			var booking = new Booking
+			{
+				GymId = vm.GymId,
+				UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+				Type = vm.Type,
+				StartDate = vm.SelectedDate.Date.Add(TimeSpan.Parse(vm.SelectedTime)),
+				EndDate = vm.SelectedDate.Date.Add(TimeSpan.Parse(vm.SelectedTime)).AddHours(1),
+				Amount = vm.Price
+			};
+
+			await _db.Bookings.AddAsync(booking);
+			await _db.SaveChangesAsync();
+
+			return RedirectToAction(nameof(Pay), new { id = booking.Id });
+		}
+
+
+		public async Task<IActionResult> Pay(int id)
         {
             var booking = await _db.Bookings
                 .Include(b => b.Gym)
@@ -97,7 +100,10 @@ namespace Depi_Project.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmPayment(int id, string transactionId)
         {
-            var booking = await _db.Bookings.FindAsync(id);
+            var booking = await _db.Bookings
+                .Include(b => b.Gym)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (booking == null)
                 return NotFound();
 
@@ -109,13 +115,15 @@ namespace Depi_Project.Controllers
                 return RedirectToAction(nameof(Pay), new { id });
             }
 
+            // تحديث حالة الدفع
             booking.IsPaid = true;
             booking.PaymentReceiptUrl = $"receipts/{transactionId}";
             await _db.SaveChangesAsync();
 
-            // بعد الدفع بنجاح
-            return RedirectToAction(nameof(Details), new { id = booking.Id });
+            // بعد الدفع: رجّع صفحة Success فيها processing ثم redirect
+            return View("PaymentSuccess", booking);
         }
+
 
         // ✅ إضافة صفحة تفاصيل الحجز لتجنب الخطأ CS0103
         public async Task<IActionResult> Details(int id)

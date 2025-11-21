@@ -26,6 +26,6 @@ namespace Depi_Project.Models
         public bool IsCancelled { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string PaymentReceiptUrl { get; set; }
+        public string? PaymentReceiptUrl { get; set; }
     }
 }

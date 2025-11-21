@@ -60,7 +60,7 @@ namespace Depi_Project.Controllers
                 case "GymOwner":
                     return RedirectToAction("Dashboard", "GymOwner");
                 case "User":
-                    return RedirectToAction("Dashboard", "Profile");
+                    return RedirectToAction("Search", "User");
                 default:
                     return RedirectToAction("Index", "Home");
             }
@@ -110,7 +110,7 @@ namespace Depi_Project.Controllers
                     case "GymOwner":
                         return RedirectToAction("Dashboard", "GymOwner");
                     case "User":
-                        return RedirectToAction("Dashboard", "Profile");
+                        return RedirectToAction("Dashboard", "User");
                     default:
                         return RedirectToAction("Index", "Home");
                 }

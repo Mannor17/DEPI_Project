@@ -13,7 +13,15 @@ namespace Depi_Project.Models
         public double Latitude { get; set; }   // for nearby search
         public double Longitude { get; set; }
         public string? OwnerId { get; set; }
-        public virtual ApplicationUser Owner { get; set; }
+        public decimal? PricePerDay { get; set; }
+        public decimal? PricePerMonth { get; set; }
+        public decimal? PriceWithTrainer { get; set; }
+		public string? OpeningHours { get; set; }
+		public string? Phone { get; set; }
+		public string? Email { get; set; }
+
+
+		public virtual ApplicationUser Owner { get; set; }
         public virtual ICollection<Trainer> Trainers { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<GymMedia> Media { get; set; }

@@ -4,6 +4,7 @@ using Depi_Project.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Depi_Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251120155942_addpricetogym")]
+    partial class addpricetogym
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,29 +158,6 @@ namespace Depi_Project.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("Depi_Project.Models.Favorite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GymId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Favorites");
-                });
-
             modelBuilder.Entity("Depi_Project.Models.Gym", b =>
                 {
                     b.Property<int>("Id")
@@ -194,9 +174,6 @@ namespace Depi_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
@@ -207,14 +184,8 @@ namespace Depi_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OpeningHours")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OwnerId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("PricePerDay")
                         .HasColumnType("decimal(18,2)");
@@ -312,12 +283,6 @@ namespace Depi_Project.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double?>("Rating")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("SessionsCount")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

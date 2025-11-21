@@ -1,10 +1,12 @@
-﻿<!doctype html>
+﻿@model Depi_Project.Models.ViewModels.UserDashboardViewModel
+
+<!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>User Dashboard • FitConnect</title>
-	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="stylesheet" href="~/css/style.css" />
 	<style>
 		.gym-card {
 			overflow: hidden
@@ -22,62 +24,58 @@
 		<div class="container navbar">
 			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
 			<nav class="navlinks">
-				<a asp-controller="user" asp-action="index">Dashboard</a>
-				<a asp-controller="user" asp-action="Profile">Profile</a>
-				<a asp-controller="user" asp-action="booking">Bookings</a>
-				<a asp-controller="user" asp-action="home">Logout</a>
+				<a href="/User/Dashboard">Dashboard</a>
+				<a href="/User/Profile">Profile</a>
+				<a href="/Account/Logout">Logout</a>
 			</nav>
 		</div>
 	</header>
+
 	<section class="section">
 		<div class="container">
-			<h1 class="section-title">Featured Gyms</h1>
+			<h1 class="section-title">Welcome, @Model.UserName 👋</h1>
+
+			<h2 class="section-title">Featured Gyms</h2>
 			<div class="grid grid-3">
-				<div class="card gym-card">
-					<img src="../assets/gym1.jpg" alt="gym" />
-					<div class="card-body">
-						<h3>PowerFit Gym <span class="badge gray" style="margin-left:8px">4.8</span></h3>
-						<p class="section-sub" style="margin:6px 0">Downtown, 2.5 km away</p>
-						<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><span class="badge gray">Cardio</span><span class="badge gray">Weights</span><span class="badge gray">Classes</span></div>
-						<div style="display:flex;justify-content:space-between;align-items:center">
-							<div class="section-sub">$50/month</div>
-							<a class="btn btn-primary" href="gym-details.html">View Details</a>
+				@foreach (var gym in Model.Gyms)
+				{
+					<div class="card gym-card">
+						<img src="@(gym.Media?.FirstOrDefault()?.Url ?? "/assets/default-gym.jpg")" alt="@gym.Name" />
+						<div class="card-body">
+							<h3>
+								@gym.Name <span class="badge gray" style="margin-left:8px">
+									@(gym.Reviews?.Any() == true ? gym.Reviews.Average(r => r.Rating).ToString("0.0") : "N/A")
+								</span>
+							</h3>
+							<p class="section-sub" style="margin:6px 0">@gym.Address</p>
+							<div style="display:flex;justify-content:space-between;align-items:center">
+								<a class="btn btn-primary" href="/Gym/Details/@gym.Id">View Details</a>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="card gym-card">
-					<img src="../assets/gym2.jpg" alt="gym" />
-					<div class="card-body">
-						<h3>Elite Fitness Center <span class="badge gray" style="margin-left:8px">4.9</span></h3>
-						<p class="section-sub" style="margin:6px 0">Midtown, 3.2 km away</p>
-						<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><span class="badge gray">Personal Training</span><span class="badge gray">Pool</span><span class="badge gray">Sauna</span></div>
-						<div style="display:flex;justify-content:space-between;align-items:center">
-							<div class="section-sub">$65/month</div>
-							<a class="btn btn-primary" href="gym-details.html">View Details</a>
-						</div>
-					</div>
-				</div>
-				<div class="card gym-card">
-					<img src="../assets/gym3.jpg" alt="gym" />
-					<div class="card-body">
-						<h3>FitZone 24/7 <span class="badge gray" style="margin-left:8px">4.7</span></h3>
-						<p class="section-sub" style="margin:6px 0">East Side, 1.8 km away</p>
-						<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><span class="badge gray">24/7 Access</span><span class="badge gray">CrossFit</span><span class="badge gray">Boxing</span></div>
-						<div style="display:flex;justify-content:space-between;align-items:center">
-							<div class="section-sub">$45/month</div>
-							<a class="btn btn-primary" href="gym-details.html">View Details</a>
-						</div>
-					</div>
-				</div>
+				}
 			</div>
 
 			<div class="grid grid-3" style="margin-top:26px">
-				<div class="card"><div class="badge teal">⏰ Upcoming Bookings</div><h2 class="section-title" style="margin:10px 0 0">3</h2><p class="section-sub">This week</p></div>
-				<div class="card"><div class="badge orange">⭐ Favorite Gyms</div><h2 class="section-title" style="margin:10px 0 0">5</h2><p class="section-sub">Saved locations</p></div>
-				<div class="card"><div class="badge gray">💳 Total Spent</div><h2 class="section-title" style="margin:10px 0 0">$240</h2><p class="section-sub">This month</p></div>
+				<div class="card">
+					<div class="badge teal">⏰ Upcoming Bookings</div>
+					<h2 class="section-title">@Model.UpcomingBookings</h2>
+					<p class="section-sub">This week</p>
+				</div>
+				<div class="card">
+					<div class="badge orange">🏋️ Total Gyms</div>
+					@* <h2 class="section-title">@Model.TotalGyms</h2> *@
+					<p class="section-sub">In the system</p>
+				</div>
+				<div class="card">
+					<div class="badge gray">💳 Total Spent</div>
+					<h2 class="section-title">$@Model.TotalSpent</h2>
+					<p class="section-sub">Total Paid</p>
+				</div>
 			</div>
 		</div>
 	</section>
-	<script src="../js/main.js"></script>
+
+	<script src="~/js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,51 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Visual Studio indexes (VS cache files)
+.vs/**/FileContentIndex/
+*.vsidx
+
+# Rider / JetBrains
+.idea/
+
+# VS Code
+.vscode/
+
+# Publish / deployment
+*.publishsettings
+*.azurePubxml
+*.azurePubxml.user
+
+# Logs, DB, temp
+*.log
+*.sqlite
+*.db
+*.cache
+
+# Debug / compiled files
+*.pdb
+*.exe
+*.dll
+*.apphost
+*.runtimeconfig.json
+
+# Node / frontend (if any)
+node_modules/
+
+# User-specific files
+*.env
+*.local
+
+# OS files
+.DS_Store
+Thumbs.db

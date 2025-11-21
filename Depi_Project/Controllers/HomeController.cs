@@ -29,17 +29,17 @@ namespace Depi_Project.Controllers
             return View(list);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var gym = await _db.Gyms
-                .Include(g => g.Trainers)
-                .Include(g => g.Reviews).ThenInclude(r => r.User)
-                .Include(g => g.Media)
-                .FirstOrDefaultAsync(g => g.Id == id);
+        //public async Task<IActionResult> Details(int id)
+        //{
+        //    var gym = await _db.Gyms
+        //        .Include(g => g.Trainers)
+        //        .Include(g => g.Reviews).ThenInclude(r => r.User)
+        //        .Include(g => g.Media)
+        //        .FirstOrDefaultAsync(g => g.Id == id);
 
-            if (gym == null) return NotFound();
-            return View(gym);
-        }
+        //    if (gym == null) return NotFound();
+        //    return View(gym);
+        //}
     }
 }
 
