@@ -74,7 +74,7 @@ Admins can monitor the entire system and manage all users.
 7. Jira Planning & Sprints
 
 8. 📎 Documentation Folder:
-   👉 https://drive.google.com/drive/folders/1ayS9rOQ4F68Xu2Z8cuzB8Cc-DZDxjZwp?usp=sharing
+   👉 [https://drive.google.com/drive/folders/1ayS9rOQ4F68Xu2Z8cuzB8Cc-DZDxjZwp?usp=sharing](https://drive.google.com/file/d/1zaCsGID4-XpHfkTo3QU-rnSGHdsXIsLb/view?usp=sharing)
 
 ## 🧩 Project Features
 
