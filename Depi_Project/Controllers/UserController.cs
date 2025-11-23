@@ -64,14 +64,14 @@ namespace Depi_Project.Controllers
 				}
 			}
 
-			// Optional: order by distance if lat/lng provided
-			if (lat.HasValue && lng.HasValue)
-			{
-				double latv = lat.Value, lngv = lng.Value;
-				gyms = gyms.OrderBy(g =>
-					Math.Sqrt(Math.Pow(g.Latitude - latv, 2) + Math.Pow(g.Longitude - lngv, 2))
-				);
-			}
+			//// Optional: order by distance if lat/lng provided
+			//if (lat.HasValue && lng.HasValue)
+			//{
+			//	double latv = lat.Value, lngv = lng.Value;
+			//	gyms = gyms.OrderBy(g =>
+			//		Math.Sqrt(Math.Pow(g.Latitude - latv, 2) + Math.Pow(g.Longitude - lngv, 2))
+			//	);
+			//}
 
 			var results = gyms.Take(50).ToList();
 			return View(results);
@@ -171,7 +171,7 @@ namespace Depi_Project.Controllers
                 .Select(f => f.Gym)
                 .ToListAsync();
 
-            // 4) Featured Gyms
+            // 4) Gyms
             var gyms = await _context.Gyms
                 .Include(g => g.Media)
                 .Include(g => g.Reviews)
@@ -192,30 +192,30 @@ namespace Depi_Project.Controllers
             return View(model);
         }
 
-		[HttpPost]
-		public async Task<IActionResult> ToggleFavorite(int gymId)
-		{
-			var userId = _userManager.GetUserId(User);
+		//[HttpPost]
+		//public async Task<IActionResult> ToggleFavorite(int gymId)
+		//{
+		//	var userId = _userManager.GetUserId(User);
 
-			var existing = await _context.Favorites
-				.FirstOrDefaultAsync(f => f.UserId == userId && f.GymId == gymId);
+		//	var existing = await _context.Favorites
+		//		.FirstOrDefaultAsync(f => f.UserId == userId && f.GymId == gymId);
 
-			if (existing != null)
-			{
-				_context.Favorites.Remove(existing);
-			}
-			else
-			{
-				_context.Favorites.Add(new Favorite
-				{
-					UserId = userId,
-					GymId = gymId
-				});
-			}
+		//	if (existing != null)
+		//	{
+		//		_context.Favorites.Remove(existing);
+		//	}
+		//	else
+		//	{
+		//		_context.Favorites.Add(new Favorite
+		//		{
+		//			UserId = userId,
+		//			GymId = gymId
+		//		});
+		//	}
 
-			await _context.SaveChangesAsync();
-			return RedirectToAction("Details", "Gym", new { id = gymId });
-		}
+		//	await _context.SaveChangesAsync();
+		//	return RedirectToAction("Details", "Gym", new { id = gymId });
+		//}
 
 
 
@@ -230,7 +230,7 @@ namespace Depi_Project.Controllers
             // جلب عدد الحجوزات لهذا المستخدم
             var totalBookings = await _context.Bookings.CountAsync(b => b.UserId == currentUser.Id);
 
-            // جلب آخر 5 حجوزات للعرض (اختياري)
+            // جلب آخر 5 حجوزات للعرض 
             var bookings = await _context.Bookings
                                 .Where(b => b.UserId == currentUser.Id)
                                 .OrderByDescending(b => b.CreatedAt)
@@ -296,7 +296,7 @@ namespace Depi_Project.Controllers
                 currentUser.UserName = model.Email;
             }
 
-            // أخيراً نحدّث السجل في الـ DB
+            //  نحدّث السجل في الـ DB
             var updateResult = await _userManager.UpdateAsync(currentUser);
             if (!updateResult.Succeeded)
             {

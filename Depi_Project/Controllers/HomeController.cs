@@ -12,21 +12,25 @@ namespace Depi_Project.Controllers
         public HomeController(ApplicationDbContext db) { _db = db; }
 
 
-        public async Task<IActionResult> Index(string q, double? lat, double? lng)
+        //public async Task<IActionResult> Index(string q, double? lat, double? lng)
+        //{
+        //    var gyms = _db.Gyms.Include(g => g.Reviews).Include(g => g.Media).AsQueryable();
+
+        //    if (!string.IsNullOrWhiteSpace(q))
+        //        gyms = gyms.Where(g => g.Name.Contains(q) || g.Description.Contains(q));
+
+        //    if (lat.HasValue && lng.HasValue)
+        //    {
+        //        gyms = gyms.OrderBy(g => (g.Latitude - lat.Value) * (g.Latitude - lat.Value) +
+        //                                 (g.Longitude - lng.Value) * (g.Longitude - lng.Value));
+        //    }
+
+        //    var list = await gyms.Take(50).ToListAsync();
+        //    return View(list);
+        //}
+        public IActionResult Index()
         {
-            var gyms = _db.Gyms.Include(g => g.Reviews).Include(g => g.Media).AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(q))
-                gyms = gyms.Where(g => g.Name.Contains(q) || g.Description.Contains(q));
-
-            if (lat.HasValue && lng.HasValue)
-            {
-                gyms = gyms.OrderBy(g => (g.Latitude - lat.Value) * (g.Latitude - lat.Value) +
-                                         (g.Longitude - lng.Value) * (g.Longitude - lng.Value));
-            }
-
-            var list = await gyms.Take(50).ToListAsync();
-            return View(list);
+            return View();
         }
 
         //public async Task<IActionResult> Details(int id)

@@ -172,7 +172,7 @@ namespace Depi_Project.Controllers
         }
 
 
-        // ✅ إضافة صفحة تفاصيل الحجز لتجنب الخطأ CS0103
+        //  إضافة صفحة تفاصيل الحجز لتجنب الخطأ CS0103
         public async Task<IActionResult> Details(int id)
         {
             var booking = await _db.Bookings
