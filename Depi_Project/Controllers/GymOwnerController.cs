@@ -1,5 +1,6 @@
 ﻿using Depi_Project.Data;
 using Depi_Project.Models;
+using Depi_Project.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,38 @@ namespace Depi_Project.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var ownerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var gym = await _db.Gyms.Include(g => g.Bookings)
-                                    .FirstOrDefaultAsync(g => g.OwnerId == ownerId);
-            return View(gym);
+
+            var gym = await _db.Gyms
+                .Include(g => g.Bookings)
+                .Include(g => g.Reviews)
+                .Include(g => g.Media)
+                .FirstOrDefaultAsync(g => g.OwnerId == ownerId);
+
+            var recentBooking = gym.Bookings
+                .OrderByDescending(b=>b.CreatedAt)
+                .Take(5)
+                .ToList();
+
+            var totalBooking = gym.Bookings.Count();
+
+            var totalRevenue = gym.Bookings
+                .Where(b=>b.IsPaid)
+                .Sum(b=>b.Amount);
+
+            var avgRating = gym.Reviews.Any() ? gym.Reviews
+                .Average(r => r.Rating) : 0;
+
+            var model = new GymDashboardVM
+            {
+                Gym = gym,
+                RecentBookings = recentBooking,
+                TotalBookings = totalBooking,
+                TotalRevenue = totalRevenue,
+                AvgRating = avgRating,
+                ReviewsCount = gym.Reviews.Count()
+            };
+
+            return View(model);
         }
 
         public IActionResult Bookings() => View();
