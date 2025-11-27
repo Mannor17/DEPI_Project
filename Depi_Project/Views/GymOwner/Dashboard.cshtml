@@ -1,147 +1,493 @@
-﻿@model GymDashboardVM
+﻿@model Depi_Project.Models.ViewModels.GymDashboardVM
+
+@{
+    ViewData["Title"] = "Gym Dashboard";
+    Layout = "_Layout";
+}
 
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Gym Dashboard • FitConnect</title>
-	<link rel="stylesheet" href="../css/style.css" />
-	<style>
-		.dashboard-layout { display: grid; grid-template-columns: 1fr 400px; gap: 24px; margin-top: 24px; }
-		.gym-image { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 16px; }
-		.facility-tags { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
-		.facility-tag { background: var(--accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-		.booking-item { padding: 16px 0; border-bottom: 1px solid #eef2f7; }
-		.booking-item:last-child { border-bottom: none; }
-		.booking-name { font-weight: 600; margin-bottom: 4px; }
-		.booking-time { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
-		.booking-badges { display: flex; gap: 8px; }
-		.action-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 24px; }
-		.action-card { text-align: center; padding: 24px; }
-		.action-card .btn { width: 100%; margin-top: 12px; }
-	</style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gym Dashboard • FitConnect</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .gym-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .no-gym-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .facility-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .facility-tag {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .booking-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #eef2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .booking-item:last-child {
+                border-bottom: none;
+            }
+
+        .booking-info {
+            flex: 1;
+        }
+
+        .booking-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .booking-time {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .booking-badges {
+            display: flex;
+            gap: 8px;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn-sm {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+            .action-btn-sm.approve {
+                background: var(--success);
+                color: white;
+            }
+
+            .action-btn-sm.reject {
+                background: var(--danger);
+                color: white;
+            }
+
+            .action-btn-sm:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .action-card {
+            text-align: center;
+            padding: 24px;
+            transition: .2s;
+        }
+
+            .action-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            }
+
+            .action-card .icon {
+                font-size: 48px;
+                margin-bottom: 12px;
+            }
+
+            .action-card .btn {
+                width: 100%;
+                margin-top: 12px;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 8px;
+            transition: .2s;
+        }
+
+            .info-row:hover {
+                background: rgba(0,0,0,0.02);
+            }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        @@media (max-width: 768px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .kpis {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-	<header class="header">
-		<div class="container navbar">
-			<div class="brand"><div class="logo">🏋️</div> FitConnect</div>
-			<nav class="navlinks">
-				<a asp-controller="gymowner" asp-action="dashboard" style="color: var(--text);">Dashboard</a>
-				<a asp-controller="gymowner" asp-action="media">Media</a>
-				<a asp-controller="gymowner" asp-action="bookings">Bookings</a>
-				<a asp-controller="home" asp-action="index">Logout</a>
-			</nav>
-		</div>
-	</header>
+    <header class="header">
+        <div class="container navbar">
+            <div class="brand"><div class="logo">🏋️</div> FitConnect</div>
+            <nav class="navlinks">
+                <a asp-controller="GymOwner" asp-action="Dashboard" class="active">Dashboard</a>
+                <a asp-controller="GymOwner" asp-action="Edit">Edit Gym</a>
+                <a asp-controller="GymOwner" asp-action="Bookings">Bookings</a>
+                <a asp-controller="GymOwner" asp-action="Trainers">Trainers</a>
+                <a asp-controller="GymOwner" asp-action="Media">Media</a>
+                <a asp-controller="GymOwner" asp-action="Revenue">Revenue</a>
+                <a asp-controller="Account" asp-action="Logout">Logout</a>
+            </nav>
+        </div>
+    </header>
 
-	<section class="section">
-		<div class="container">
-			<h1 class="section-title">Gym Dashboard</h1>
-			<p class="section-sub">Manage your gym and track performance</p>
+    <section class="section">
+        <div class="container">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    <span>✓</span>
+                    <span>@TempData["Success"]</span>
+                </div>
+            }
 
-			<div class="kpis">
-				<div class="kpi">
-					<div>
-						<div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Total Bookings</div>
-						<div class="value">@Model.TotalBookings</div>
-						<div style="color: var(--success); font-size: 12px; margin-top: 4px;">↗ +12% this week</div>
-					</div>
-					<div style="color: var(--primary); font-size: 24px;">📅</div>
-				</div>
-				<div class="kpi">
-					<div>
-						<div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Total Revenue</div>
-						<div class="value">$</@Model.TotalRevenue</div>
-						<div style="color: var(--success); font-size: 12px; margin-top: 4px;">↗ +8% this month</div>
-					</div>
-					<div style="color: var(--accent); font-size: 24px;">💰</div>
-				</div>
-				
-					
-				<div class="kpi">
-					<div>
-						<div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Avg Rating</div>
-						<div class="value">@Model.AvgRating.ToString("0.0")</div>
-						<div style="color: var(--muted); font-size: 12px; margin-top: 4px;">Based on @Model.ReviewsCount reviews</div>
-					</div>
-					<div style="color: var(--accent); font-size: 24px;">⭐</div>
-				</div>
-			</div>
+            @if (Model.PendingBookingsCount > 0)
+            {
+                <div class="alert alert-warning">
+                    <span>⚠</span>
+                    <span>You have @Model.PendingBookingsCount pending booking(s) awaiting approval.</span>
+                    <a asp-action="Bookings" style="margin-left: auto; font-weight: 600;">View Now →</a>
+                </div>
+            }
 
-			<div class="dashboard-layout">
-				<div class="card">
-					<img src="@Model.Gym.Media?.FirstOrDefault()?.Url" class="gym-image" />
-					<div class="card-body">
-						<h3>@Model.Gym.Name</h3>
-						<div class="info-row" style="margin: 8px 0;">
-							<span>📍</span>
-							<span>@Model.Gym.Address</span>
-						</div>
-						<div class="info-row" style="margin: 8px 0;">
-							<span>📞</span>
-							<span>@Model.Gym.Phone</span>
-						</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="section-title">Gym Dashboard</h1>
+                    <p class="section-sub">Manage your gym and track performance</p>
+                </div>
+                <a asp-action="Edit" class="btn btn-primary">✏️ Edit Gym</a>
+            </div>
 
-						<div class="info-row" style="margin: 8px 0;">
-							<span>✉</span>
-							<span>@Model.Gym.Email</span>
-						</div>
-						<div class="info-row" style="margin: 8px 0;">
-							<span>🕒</span>
-							<span>@Model.Gym.OpeningHours</span>
-						</div>
-										
-					</div>
-				</div>
+            <div class="kpis">
+                <div class="kpi">
+                    <div>
+                        <div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Total Bookings</div>
+                        <div class="value">@Model.TotalBookings</div>
+                        <div style="color: var(--muted); font-size: 12px; margin-top: 4px;">
+                            @Model.ConfirmedBookingsCount confirmed
+                        </div>
+                    </div>
+                    <div style="color: var(--primary); font-size: 32px;">📅</div>
+                </div>
+                <div class="kpi">
+                    <div>
+                        <div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Total Revenue</div>
+                        <div class="value">$@Model.TotalRevenue.ToString("N2")</div>
+                        <div style="color: var(--success); font-size: 12px; margin-top: 4px;">
+                            $@Model.MonthlyRevenue.ToString("N2") this month
+                        </div>
+                    </div>
+                    <div style="color: var(--accent); font-size: 32px;">💰</div>
+                </div>
+                <div class="kpi">
+                    <div>
+                        <div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Avg Rating</div>
+                        <div class="value">@Model.AvgRating.ToString("0.0")</div>
+                        <div style="color: var(--muted); font-size: 12px; margin-top: 4px;">
+                            @Model.ReviewsCount review@(Model.ReviewsCount != 1 ? "s" : "")
+                        </div>
+                    </div>
+                    <div style="color: var(--warning); font-size: 32px;">⭐</div>
+                </div>
+                <div class="kpi">
+                    <div>
+                        <div style="color: var(--muted); font-size: 14px; margin-bottom: 4px;">Pending</div>
+                        <div class="value" style="color: var(--warning);">@Model.PendingBookingsCount</div>
+                        <div style="color: var(--muted); font-size: 12px; margin-top: 4px;">Awaiting approval</div>
+                    </div>
+                    <div style="color: var(--warning); font-size: 32px;">⏰</div>
+                </div>
+            </div>
 
-				<div class="card">
-					<div class="card-header">
-						<h3>Recent Bookings</h3>
-						<a asp-action="Bookings" asp-controller="GymOwner" style="color: var(--primary); font-size: 14px;">View All</a>
-					</div>
+            <div class="dashboard-layout">
+                <div class="card">
+                    @if (Model.Gym.Media != null && Model.Gym.Media.Any())
+                    {
+                        <img src="@Model.Gym.Media.FirstOrDefault()?.Url" alt="@Model.Gym.Name" class="gym-image" />
+                    }
+                    else
+                    {
+                        <div class="no-gym-image">🏋️</div>
+                    }
 
-					<div class="card-body">
-						@foreach (var b in Model.RecentBookings)
-						{
-							<div class="booking-item">
-								@* <div class="booking-name">@b.User.Email</div> *@
-								<div class="booking-time">📅 @b.StartDate.ToString("MMMM dd, hh:mm tt")</div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 16px;">@Model.Gym.Name</h3>
+                        <p style="color: var(--muted); margin-bottom: 16px;">@Model.Gym.Description</p>
 
-								<div class="booking-badges">
-									<span class="badge gray">@b.Type</span>
+                        <div class="info-row">
+                            <span style="font-size: 20px;">📍</span>
+                            <span>@Model.Gym.Address</span>
+                        </div>
 
-									@if (b.IsConfirmedByOwner)
-									{
-										<span class="badge teal">Confirmed</span>
-									}
-									else
-									{
-										<span class="badge orange">Pending</span>
-									}
-								</div>
-							</div>
-						}
-					</div>
-				</div>
-			</div>
+                        @if (!string.IsNullOrEmpty(Model.Gym.Phone))
+                        {
+                            <div class="info-row">
+                                <span style="font-size: 20px;">📞</span>
+                                <span>@Model.Gym.Phone</span>
+                            </div>
+                        }
 
-			<div class="action-cards gap-5">
-				<div class="card action-card">
-					<h3>Manage Media</h3>
-					<p style="color: var(--muted); margin: 8px 0;">Upload and manage photos & videos</p>
-					<a asp-controller="gymowner" asp-action="media" class="btn btn-primary">Manage Media</a>
-				</div>
-				<div class="card action-card">
-					<h3>View Bookings</h3>
-					<p style="color: var(--muted); margin: 8px 0;">Manage session bookings</p>
-					<a asp-controller="gymowner" asp-action="bookings" class="btn btn-accent">View Bookings</a>
-				</div>
-			</div>
-		</div>
-	</section>
+                        @if (!string.IsNullOrEmpty(Model.Gym.Email))
+                        {
+                            <div class="info-row">
+                                <span style="font-size: 20px;">✉️</span>
+                                <span>@Model.Gym.Email</span>
+                            </div>
+                        }
 
-	<script src="../js/main.js"></script>
+                        @if (!string.IsNullOrEmpty(Model.Gym.OpeningHours))
+                        {
+                            <div class="info-row">
+                                <span style="font-size: 20px;">🕒</span>
+                                <span>@Model.Gym.OpeningHours</span>
+                            </div>
+                        }
+
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eef2f7;">
+                            <h4 style="margin-bottom: 12px;">Pricing</h4>
+                            <div class="facility-tags">
+                                @if (Model.Gym.PricePerDay.HasValue)
+                                {
+                                    <span class="facility-tag" style="background: var(--primary);">
+                                        Day: $@Model.Gym.PricePerDay.Value.ToString("N2")
+                                    </span>
+                                }
+                                @if (Model.Gym.PricePerMonth.HasValue)
+                                {
+                                    <span class="facility-tag" style="background: var(--accent);">
+                                        Month: $@Model.Gym.PricePerMonth.Value.ToString("N2")
+                                    </span>
+                                }
+                                @if (Model.Gym.PriceWithTrainer.HasValue)
+                                {
+                                    <span class="facility-tag" style="background: var(--success);">
+                                        Trainer: $@Model.Gym.PriceWithTrainer.Value.ToString("N2")
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <div style="display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; margin-bottom: 4px;">
+                                <span>Media Files</span>
+                                <span>@Model.MediaCount files</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: var(--muted); font-size: 14px;">
+                                <span>Trainers</span>
+                                <span>@Model.TotalTrainers trainer@(Model.TotalTrainers != 1 ? "s" : "")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Bookings</h3>
+                        <a asp-action="Bookings" style="color: var(--primary); font-size: 14px; font-weight: 600;">
+                            View All →
+                        </a>
+                    </div>
+
+                    <div class="card-body">
+                        @if (Model.RecentBookings != null && Model.RecentBookings.Any())
+                        {
+                            @foreach (var booking in Model.RecentBookings)
+                            {
+                                <div class="booking-item">
+                                    <div class="booking-info">
+                                        <div class="booking-name">@booking.User?.FullName ?? booking.User?.Email</div>
+                                        <div class="booking-time">
+                                            📅 @booking.StartDate.ToString("MMM dd, yyyy") at @booking.StartDate.ToString("hh:mm tt")
+                                        </div>
+                                        <div class="booking-badges">
+                                            <span class="badge gray">@booking.Type</span>
+                                            @if (booking.IsCancelled)
+                                            {
+                                                <span class="badge red">Cancelled</span>
+                                            }
+                                            else if (booking.IsConfirmedByOwner)
+                                            {
+                                                <span class="badge teal">Confirmed</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge orange">Pending</span>
+                                            }
+                                            @if (booking.IsPaid)
+                                            {
+                                                <span class="badge green">Paid</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge gray">Unpaid</span>
+                                            }
+                                        </div>
+                                    </div>
+                                    @if (!booking.IsConfirmedByOwner && !booking.IsCancelled)
+                                    {
+                                        <div class="booking-actions">
+                                            <form asp-action="ApproveBooking" method="post" style="display: inline;">
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <button type="submit" class="action-btn-sm approve">✓</button>
+                                            </form>
+                                            <form asp-action="RejectBooking" method="post" style="display: inline;">
+                                                <input type="hidden" name="id" value="@booking.Id" />
+                                                <button type="submit" class="action-btn-sm reject">✕</button>
+                                            </form>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📅</div>
+                                <p>No bookings yet</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-cards">
+                <div class="card action-card">
+                    <div class="icon">📸</div>
+                    <h3>Manage Media</h3>
+                    <p style="color: var(--muted); margin: 8px 0;">Upload photos & videos</p>
+                    <a asp-action="Media" class="btn btn-primary">Manage Media</a>
+                </div>
+                <div class="card action-card">
+                    <div class="icon">📋</div>
+                    <h3>View Bookings</h3>
+                    <p style="color: var(--muted); margin: 8px 0;">Manage all bookings</p>
+                    <a asp-action="Bookings" class="btn btn-accent">View Bookings</a>
+                </div>
+                <div class="card action-card">
+                    <div class="icon">👥</div>
+                    <h3>Manage Trainers</h3>
+                    <p style="color: var(--muted); margin: 8px 0;">Add or edit trainers</p>
+                    <a asp-action="Trainers" class="btn btn-primary">Manage Trainers</a>
+                </div>
+                <div class="card action-card">
+                    <div class="icon">💵</div>
+                    <h3>Revenue Report</h3>
+                    <p style="color: var(--muted); margin: 8px 0;">View financial analytics</p>
+                    <a asp-action="Revenue" class="btn btn-success">View Revenue</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Confirmation for reject action
+        document.querySelectorAll('form[action*="RejectBooking"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Are you sure you want to reject this booking?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
 </body>
 </html>
-
